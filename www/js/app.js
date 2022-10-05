@@ -1,4 +1,4 @@
-var $ = Dom7;
+var $$ = Dom7;
 
 var device = Framework7.getDevice();
 var app = new Framework7({
@@ -30,6 +30,37 @@ var app = new Framework7({
         // Init cordova APIs (see cordova-app.js)
         cordovaApp.init(f7);
       }
+      // Check login user
+      $$(document).on('page:afterin', function (e, page) {
+        if (!localStorage.username) {
+          page.router.navigate('/login/');
+        } else {
+          html('Hello ' + localStorage.username)
+        }
+      });
+      $$(document).on('page:init', function (e, page) {
+        $$('#log-out').on('click', function () {
+          localStorage.removeItem('username');
+          page.router.navigate('/login/');
+        })
+        if (page.name == 'login') {
+          $$('#btnsignin').on('click', function () {
+            app.request.post('https://ubaya.fun/hybrid/160420035/komiku/login.php',
+              {
+                "user_id": $$("#username").val(),
+                "user_password": $$("#password").val()
+              },
+              function (data) {
+                var arr = JSON.parse(data);
+                var result = arr['result'];
+                if (result == 'success') {
+                  localStorage.username = $$("#username").val();
+                  page.router.back('/');
+                } else app.dialog.alert('Username atau password salah');
+              });
+          });
+        }
+      })
     },
   },
 });
