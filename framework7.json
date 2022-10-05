@@ -1,0 +1,32 @@
+{
+  "cwd": "/Users/skyclyve/Documents/Hybrid/160420035-hybrid-project-uts",
+  "type": [
+    "cordova"
+  ],
+  "name": "Komiku",
+  "framework": "core",
+  "template": "blank",
+  "bundler": false,
+  "cssPreProcessor": false,
+  "theming": {
+    "customColor": false,
+    "color": "#007aff",
+    "darkTheme": false,
+    "iconFonts": true,
+    "fillBars": false
+  },
+  "customBuild": false,
+  "pkg": "io.framework7.myapp",
+  "cordova": {
+    "folder": "cordova",
+    "platforms": [
+      "ios",
+      "android"
+    ],
+    "plugins": [
+      "cordova-plugin-statusbar",
+      "cordova-plugin-keyboard",
+      "cordova-plugin-splashscreen"
+    ]
+  }
+}
