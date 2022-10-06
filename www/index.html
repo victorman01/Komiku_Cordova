@@ -21,22 +21,34 @@
   <meta name="msapplication-tap-highlight" content="no">
   <title>Komiku</title>
 
-
-
-
   <link rel="stylesheet" href="framework7/framework7-bundle.min.css">
   <link rel="stylesheet" href="css/icons.css">
   <link rel="stylesheet" href="css/app.css">
+  <style>
+    #txtWelcome {
+      font-family: Tahoma, Geneva, sans-serif;
+      font-size: 30px;
+      letter-spacing: 2px;
+      word-spacing: 2px;
+      color: #000000;
+      font-weight: 100%;
+      text-decoration: none;
+      font-style: normal;
+      font-variant: normal;
+      text-transform: none;
+    }
+  </style>
 </head>
 
 <body>
   <div class="panel panel-left">
     <div class="list simple-list ">
       <div class="list-group">
+        <div id="txtWelcome">Hello,</div>
         <ul>
-          <li class="list-group-title">Movie</li>
-          <li><a href="/intheater" class="panel-close">In Theaters</a></li>
-          <li><a href="/myfavourites" class="panel-close">My Favourites</a></li>
+          <li class="list-group-title">Komiku</li>
+          <li><a href="/myfavourite" class="panel-close">My Favourite</a></li>
+          <li><a href="/kategori" class="panel-close">Kategori</a></li>
           <li><a href="/popularmovies" class="panel-close">Popular Movies</a></li>
           <li><a href="/newmovie" class="panel-close">New Movie</a></li>
           <li>Ticket</li>

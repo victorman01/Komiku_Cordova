@@ -8,4 +8,12 @@ var routes = [
     path: '/login',
     url: './login.html',
   },
+  {
+    path: '/kategori',
+    url: './kategori.html',
+  },
+  {
+    path: '/komik/:id',
+    url: './komik.html',
+  },
 ];
