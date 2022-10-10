@@ -16,4 +16,12 @@ var routes = [
     path: '/komik/:id',
     url: './komik.html',
   },
+  {
+    path: '/komiks',
+    url: './komik.html',
+  },
+  {
+    path: '/bacakomik/:id',
+    url: './bacakomik.html',
+  },
 ];
