@@ -24,4 +24,8 @@ var routes = [
     path: '/bacakomik/:id',
     url: './bacakomik.html',
   },
+  {
+    path: '/myfavourite',
+    url: './favouriteskomik.html',
+  },
 ];
