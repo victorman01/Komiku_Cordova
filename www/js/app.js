@@ -35,9 +35,9 @@ var app = new Framework7({
           "https://ubaya.fun/hybrid/160420035/komiku/kategori.php", { "cari": vcari },
           function (data) {
             var arr = JSON.parse(data);
-            var kategori = arr['data'];
-            for (var i = 0; kategori.length; i++) {
-              $$("#ul_listkategori").append("<li><a href='/komik/" + kategori[i]['kategori_id'] + "'>" + kategori[i]['name'] + "</a ></li > ");
+            var kategoris = arr['data'];
+            for (var i = 0; i <= kategoris.length; i++) {
+              $$("#ul_listkategori").append("<li><a href='/komik/" + kategoris[i]["kategori_id"] + "'>" + kategoris[i]["name"] + "</a ></li > ");
             }
           }
         );
@@ -67,15 +67,17 @@ var app = new Framework7({
                 judul: favKomik[i]['judul'],
                 viewer: favKomik[i]['viewer'],
                 poster: favKomik[i]['poster'],
+                rating: favKomik[i]['rating']
               })
               favoritedKomik.forEach((t, idx) => {
                 $$("#favoritedKomik").append(
                   "<div class='col-50'><div class='card'>" +
                   "<div class='card-header'> <strong>" + t.judul +
-                  "</strong></div><div class='card-content'>" +
+                  "<div style='font-weight:normal'><p>Rating: " + t.rating + "/10<i class='f7-icons' style='color:yellow; font-size:18px'>star_fill</i></p></div></strong></div><div class='card-content'>" +
                   "<img src='" + t.poster + "' width='100%'>" +
-                  "</div><div class='card-footer'><a href='/bacakomik/" + t.id + "'>Read</a>" +
-                  "<div class='right' id='viewer-text'><i class='f7-icons size-20'>eye</i>" + t.viewer + "</div></div ></div ></div > ");
+                  "</div>" +
+                  "<div class='card-footer'><div class='left'><a class='button' href='/bacakomik/" + t.id + "'>Read</a></div>" +
+                  "<div class='right' id='viewer-text'><i class='f7-icons' style='font-size:18px'>eye</i>" + t.viewer + "</div><a class='col button open-rating'><i class='f7-icons size-20'>star_fill</i></a></div></div></div > ");
               });
             }
           })
@@ -124,25 +126,6 @@ var app = new Framework7({
           })
       }
 
-      // //Function showRating
-      // function showRating(vuser_id, vkomik_id) {
-      //   app.request.post("https://ubaya.fun/hybrid/160420035/komiku/komik.php", { "user_id": vuser_id, "komik_id": vkomik_id },
-      //     function (data) {
-      //       var arr = JSON.parse(data);
-      //       var ratings = arr['data'];
-      //       var total = 0;
-      //       var jumlah = 0;
-      //       var rating = [];
-      //       for (var i = 0; ratings.length; i++) {
-      //         rating.push({
-      //           rate: ratings[i]['rate'],
-      //         })
-      //         total += rating[i].rate;
-      //         jumlah++;
-      //       }
-      //       hasil = total / jumlah;
-      //     })
-      // }
 
       //Function isiKomiks
       function isiKomiks(idKomik) {
@@ -176,22 +159,30 @@ var app = new Framework7({
           function (data) {
             var arr = JSON.parse(data);
             var content = arr['data'];
-            var sinopsis = null;
+            $$('#detail-komik').html(" ")
             for (var i = 0; i < 1; i++) {
               details.push({
                 judul: content[i]['judul'],
                 sinopsis: content[i]['sinopsis'],
+                published: content[i]['published'],
+                author: content[i]['author']
               });
               for (i = 0; i <= content.length; i++) {
-                var judul = details[i].judul;
+                judul = details[i].judul;
                 sinopsis = details[i].sinopsis;
+                author = details[i].author;
+                published = details[i].published
                 $$('#title-komik').append("<div>" + judul + "</div>");
-                $$('#detail-komik').append("<div class='block-title'>Detail Komik</div>" +
+                $$('#detail-komik').append("<div class='block-title'>Detail Comic</div>" +
                   "<div class='list accordion-list'><ul><li class='accordion-item'><a class='item-content item-link' href='#'>" +
-                  "<div class='item-inner'><div class='item-title'>Kategori</div></div></a><div class='accordion-item-content'><div class='block'>" +
+                  "<div class='item-inner'><div class='item-title'>Author</div></div></a><div class='accordion-item-content'><div class='block'>" +
+                  "<p>" + author + "</p></div></div></li><li class='accordion-item'><a class='item-content item-link' href='#'>" +
+                  "<div class='item-inner'><div class='item-title'>Publish Date</div></div></a><div class='accordion-item-content'><div class='block'>" +
+                  "<p>" + published + "</p></div></div></li><li class='accordion-item'><a class='item-content item-link' href='#'>" +
+                  "<div class='item-inner'><div class='item-title'>Categories</div></div></a><div class='accordion-item-content'><div class='block'>" +
                   "<p id='kategorikomik'></p></div></div></li><li class='accordion-item'><a class='item-content item-link' href='#'>" +
-                  "<div class='item-inner'><div class='item-title'>Sinopsis komik</div></div></a><div class='accordion-item-content'><div class='block'>" +
-                  "<p>" + sinopsis + "</p></div></div></li></ul>");
+                  "<div class='item-inner'><div class='item-title'>Synopsis Comic</div></div></a><div class='accordion-item-content'><div class='block'>" +
+                  "<p>" + sinopsis + "</p></div></div></li>");
               }
             }
           })
@@ -203,12 +194,15 @@ var app = new Framework7({
           "https://ubaya.fun/hybrid/160420035/komiku/showkategori.php", { "komik_id": komik_id },
           function (data) {
             var arr = JSON.parse(data);
-            var kategori = arr['data'];
-            for (var i = 0; i <= kategori.length; i++) {
-              if (i == (kategori.length - 1))
-                $$('#kategorikomik').append(kategori[i]["name"]);
-              else
-                $$('#kategorikomik').append(kategori[i]["name"] + ", ");
+            kategori = arr['data'];
+            for (var i = 0; kategori.length; i++) {
+              katergoris = kategori[i]["name"]
+              if (i == (kategori.length - 1)) {
+                $$('#kategorikomik').append(katergoris);
+              }
+              else {
+                $$('#kategorikomik').append(katergoris + ", ");
+              }
             }
           }
         )
@@ -228,15 +222,17 @@ var app = new Framework7({
                 judul: komiks[i]['judul'],
                 viewer: komiks[i]['viewer'],
                 poster: komiks[i]['poster'],
+                rating: komiks[i]['rating']
               });
               komik_inside.forEach((t, idx) => {
                 $$("#ul_listkomik").append(
                   "<div class='col-50'><div class='card'>" +
                   "<div class='card-header'> <strong>" + t.judul +
-                  "</strong></div><div class='card-content'>" +
+                  "<div style='font-weight:normal'><p>Rating: " + t.rating + "/10<i class='f7-icons' style='color:yellow; font-size:18px'>star_fill</i></p></div></strong></div><div class='card-content'>" +
                   "<img src='" + t.poster + "' width='100%'>" +
-                  "</div><div class='card-footer'><a href='/bacakomik/" + t.id + "'>Read</a>" +
-                  "<div class='right' id='viewer-text'><i class='f7-icons size-20'>eye</i>" + t.viewer + "</div></div ></div ></div > ");
+                  "</div>" +
+                  "<div class='card-footer'><div class='left'><a class='button' href='/bacakomik/" + t.id + "'>Read</a></div>" +
+                  "<div class='right' id='viewer-text'><i class='f7-icons' style='font-size:18px'>eye</i>" + t.viewer + "</div><a href='#' data-popup='.my-popup' class='popup-open col button button-raised'><i class='f7-icons size-20'>star_fill</i></a></div></div></div>");
               });
             }
           }
@@ -295,6 +291,7 @@ var app = new Framework7({
             getKomik($$('#txtcari1').val(), idKategori);
           })
         }
+
         if (page.name == "bacakomik") {
           $$('#bacakomik').html(" ");
           $$('#title-komik').html(" ");
@@ -311,6 +308,7 @@ var app = new Framework7({
             unFavKomik(id_Komik, localStorage.id);
           })
         }
+
         if (page.name == "favouritedKomik") {
           $$('#favoritedKomik').html(' ');
           favoritedKomik(localStorage.id)
