@@ -93,7 +93,7 @@ var app = new Framework7({
             var status = arr['result'];
             if (status == 'success') {
               $$('#btnfav').html(' ')
-              $$('#btnfav').append("<a><i class='f7-icons'>heart_fill</i></a>");
+              $$('#btnfav').append("<a><i class='f7-icons' style='color:red'>heart_fill</i></a>");
             } else if (status == 'error') {
               $$('#btnfav').html(' ')
               $$('#btnfav').append("<a><i class='f7-icons'>heart</i></a>");
@@ -110,7 +110,7 @@ var app = new Framework7({
             if (status == "success") {
               app.dialog.alert("Favorited")
               $$('#btnfav').html(' ')
-              $$('#btnfav').append("<a><i class='f7-icons'>heart_fill</i></a>");
+              $$('#btnfav').append("<a><i class='f7-icons' style='color:red'>heart_fill</i></a>");
             }
             else if (status == 'error') {
               app.request.post("https://ubaya.fun/hybrid/160420035/komiku/unfavkomik.php", { "komik_id": komik_id, "user_id": user_id },
@@ -233,12 +233,26 @@ var app = new Framework7({
                   "<img src='" + t.poster + "' width='100%'>" +
                   "</div>" +
                   "<div class='card-footer'><div class='left'><a class='button button-raised' href='/bacakomik/" + t.id + "'>Read</a></div>" +
-                  "<div class='right' id='viewer-text'><i class='f7-icons' style='font-size:18px'>eye</i>" + t.viewer + "</div><a href='#' data-popup='.my-popup' class='popup-open col button button-raised'><i class='f7-icons size-20'>star_fill</i></a></div></div></div>");
+                  "<div class='right' id='viewer-text'><i class='f7-icons' style='font-size:18px'>eye</i>" + t.viewer + "</div></div></div></div>");
               });
             }
           }
         );
-      };
+      }
+
+      //function addRating
+      function addRating(komik_id, user_id, rate) {
+        app.request.post("https://ubaya.fun/hybrid/160420035/komiku/addrating.php", { "komik_id": komik_id, "user_id": user_id, "rate": rate },
+          function (data) {
+            var arr = JSON.parse(data);
+            var result = arr['result']
+            if (result == 'success') {
+              app.dialog.alert("Thanks for rating this comics")
+            } else if (result == 'error') {
+              app.dialog.alert("You already rating this comics")
+            }
+          })
+      }
 
       // Check login user
       $$(document).on('page:afterin', function (e, page) {
@@ -286,26 +300,6 @@ var app = new Framework7({
         }
 
         if (page.name == "komik") {
-          $$("#pop-up-rating").append(" <!-- POP UP RATING -->" +
-            "<div class= 'popup my-popup'>" +
-            "<div class='view'>" +
-            "<div class='page'>" +
-            "<div class='navbar'>" +
-            "<div class='navbar-bg'></div>" +
-            "<div class='navbar-inner'>" +
-            "<div class='title'>Rating</div>" +
-            "<div class='right'>" +
-            "<!-- Link to close popup -->" +
-            "<a class='link popup-close'>Close</a>" +
-            "</div>" +
-            "</div>" +
-            "</div>" +
-            "<li>" +
-            "<div class='item-content item-input'>" +
-            "<di class='item inner'>" +
-            "<div class='item title item-label'>Your Rating</div>'" +
-            "<div class='item input-wrap'>" +
-            "<input type='text' name='name' placeholder='Your rating'/>" + "</div>" + "</di>" + "</div>" + "</li>" + "</div>" + "</div></div>")
           $$("#ul_listkomik").html(" ");
           if (page.router.currentRoute.params.id != null) {
             var idKategori = page.router.currentRoute.params.id;
@@ -318,6 +312,34 @@ var app = new Framework7({
         }
 
         if (page.name == "bacakomik") {
+          $$("#pop-up-rating").append(" <!-- POP UP RATING -->" +
+            "<div class= 'popup my-popup'>" +
+            "<div class='view'>" +
+            "<div class='page'>" +
+            "<div class='navbar'>" +
+            "<div class='navbar-bg'></div>" +
+            "<div class='navbar-inner'>" +
+            "<div class='title'>Your Rating</div>" +
+            "<div class='right'>" +
+            "<!-- Link to close popup -->" +
+            "<a class='link popup-close'>Close</a>" +
+            "</div>" +
+            "</div>" +
+            "</div>" +
+            "<br><li>" +
+            "<div class='item-content item-input'>" +
+            "<class='item inner'><br>" +
+            "<a class='button button-raised' id='ratingUser1'><i class='f7-icons size-20'>star_fill</i></a>" +
+            "<a class='button button-raised' id='ratingUser2'><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i></a>" +
+            "<a class='button button-raised' id='ratingUser3'><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i></a>" +
+            "<a class='button button-raised' id='ratingUser4'><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i></a>" +
+            "<a class='button button-raised' id='ratingUser5'><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i></a>" +
+            "<a class='button button-raised' id='ratingUser6'><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i></a>" +
+            "<a class='button button-raised' id='ratingUser7'><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i></a>" +
+            "<a class='button button-raised' id='ratingUser8'><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i></a>" +
+            "<a class='button button-raised' id='ratingUser9'><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i></a>" +
+            "<a class='button button-raised' id='ratingUser10'><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i></a>" +
+            "</div></div></li></div></div></div>")
           $$('#bacakomik').html(" ");
           $$('#title-komik').html(" ");
           var id_Komik = page.router.currentRoute.params.id;
@@ -328,6 +350,12 @@ var app = new Framework7({
           isFavKomik(id_Komik, localStorage.id);
           $$('#btnfav').on('click', function () {
             favKomik(id_Komik, localStorage.id);
+          })
+          $$('#ratingUser1').on('click', function () {
+            addRating(id_Komik, localStorage.id, 1)
+          })
+          $$('#ratingUser2').on('click', function () {
+            addRating(id_Komik, localStorage.id, 2)
           })
         }
 
