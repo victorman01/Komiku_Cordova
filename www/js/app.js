@@ -29,6 +29,7 @@ var app = new Framework7({
         // Init cordova APIs (see cordova-app.js)
         cordovaApp.init(f7);
       }
+
       //function getKategori
       function getKategori(vcari) {
         app.request.post(
@@ -37,7 +38,7 @@ var app = new Framework7({
             var arr = JSON.parse(data);
             var kategoris = arr['data'];
             for (var i = 0; i <= kategoris.length; i++) {
-              $$("#ul_listkategori").append("<li><a href='/komik/" + kategoris[i]["kategori_id"] + "'>" + kategoris[i]["name"] + "</a ></li > ");
+              $$("#ul_listkategori").append("<li><a href='/komik/" + kategoris[i]["kategori_id"] + "'>" + kategoris[i]["name"] + "</a></li > ");
             }
           }
         );
@@ -54,6 +55,7 @@ var app = new Framework7({
             }
           })
       }
+
       //Function favoritedKomik
       function favoritedKomik(user_id, komik_id) {
         app.request.post("https://ubaya.fun/hybrid/160420035/komiku/favoritekomik.php", { "user_id": user_id, "komik_id": komik_id },
@@ -76,27 +78,27 @@ var app = new Framework7({
                   "<div style='font-weight:normal'><p>Rating: " + t.rating + "/10<i class='f7-icons' style='color:yellow; font-size:18px'>star_fill</i></p></div></strong></div><div class='card-content'>" +
                   "<img src='" + t.poster + "' width='100%'>" +
                   "</div>" +
-                  "<div class='card-footer'><div class='left'><a class='button' href='/bacakomik/" + t.id + "'>Read</a></div>" +
-                  "<div class='right' id='viewer-text'><i class='f7-icons' style='font-size:18px'>eye</i>" + t.viewer + "</div><a class='col button open-rating'><i class='f7-icons size-20'>star_fill</i></a></div></div></div > ");
+                  "<div class='card-footer'><div class='left'><a class='button button-raised' href='/bacakomik/" + t.id + "'>Read</a></div>" +
+                  "<div class='right' id='viewer-text'><i class='f7-icons' style='font-size:18px'>eye</i>" + t.viewer + "</div><a class='col button open-rating button-raised'><i class='f7-icons size-20'>star_fill</i></a></div></div></div > ");
               });
             }
           })
       }
 
-      //Function checkFavKomik
-      function isFavKomik(user_id, komik_id) {
-        app.request.post("https://ubaya.fun/hybrid/160420035/komiku/checkfav.php"), { "user_id": user_id, "komik_id": komik_id },
+      //Function isFavKomik
+      function isFavKomik(komik_id, user_id) {
+        app.request.post("https://ubaya.fun/hybrid/160420035/komiku/checkfavkomik.php", { "komik_id": komik_id, "user_id": user_id },
           function (data) {
             var arr = JSON.parse(data);
-            var isFavKomik = arr['result'];
-            if (isFavKomik == 'success') {
+            var status = arr['result'];
+            if (status == 'success') {
               $$('#btnfav').html(' ')
-              $$('#btnfav').append("<a id='unfavouritechk'><i class='f7-icons'>heart_fill</i></a>");
-            } else {
+              $$('#btnfav').append("<a><i class='f7-icons'>heart_fill</i></a>");
+            } else if (status == 'error') {
               $$('#btnfav').html(' ')
-              $$('#btnfav').append("<a id='favouritechk'><i class='f7-icons'>heart</i></a>");
+              $$('#btnfav').append("<a><i class='f7-icons'>heart</i></a>");
             }
-          }
+          })
       }
 
       //Function FavKomik
@@ -108,24 +110,22 @@ var app = new Framework7({
             if (status == "success") {
               app.dialog.alert("Favorited")
               $$('#btnfav').html(' ')
-              $$('#btnfav').append("<a id='unfavouritechk'><i class='f7-icons'>heart_fill</i></a>");
+              $$('#btnfav').append("<a><i class='f7-icons'>heart_fill</i></a>");
+            }
+            else if (status == 'error') {
+              app.request.post("https://ubaya.fun/hybrid/160420035/komiku/unfavkomik.php", { "komik_id": komik_id, "user_id": user_id },
+                function (data) {
+                  arr = JSON.parse(data);
+                  var status = arr['result'];
+                  if (status == "success") {
+                    app.dialog.alert("Unfavorited")
+                    $$('#btnfav').html(' ')
+                    $$('#btnfav').append("<a><i class='f7-icons'>heart</i></a>");
+                  }
+                })
             }
           })
       }
-      //Function unFavKomik
-      function unFavKomik(komik_id, user_id) {
-        app.request.post("https://ubaya.fun/hybrid/160420035/komiku/unfavmovie.php", { "komik_id": komik_id, "user_id": user_id },
-          function (data) {
-            var arr = JSON.parse(data);
-            var status = arr['result'];
-            if (status == 'success') {
-              app.dialog.alert("Unfavorited");
-              $$('#btnfav').html(' ')
-              $$('#btnfav').append("<a id='favouritechk'><i class='f7-icons'>heart</i></a>");
-            }
-          })
-      }
-
 
       //Function isiKomiks
       function isiKomiks(idKomik) {
@@ -149,6 +149,7 @@ var app = new Framework7({
             }
           })
       }
+
       //Function detailKomik
       function detailKomik(idKomik) {
         var details = [];
@@ -238,6 +239,7 @@ var app = new Framework7({
           }
         );
       };
+
       // Check login user
       $$(document).on('page:afterin', function (e, page) {
         if (!localStorage.username) {
@@ -246,6 +248,7 @@ var app = new Framework7({
           $$('#txtWelcome').html('Hello, ' + localStorage.name);
         }
       });
+
       $$(document).on('page:init', function (e, page) {
         $$('#log-out').on('click', function () {
           localStorage.removeItem('username');
@@ -253,6 +256,7 @@ var app = new Framework7({
           localStorage.removeItem('id');
           page.router.navigate('/login/');
         })
+
         if (page.name == 'login') {
           $$('#btnsignin').on('click', function () {
             app.request.post('https://ubaya.fun/hybrid/160420035/komiku/login.php',
@@ -280,6 +284,7 @@ var app = new Framework7({
             getKategori($$('#txtcari').val());
           })
         }
+
         if (page.name == "komik") {
           $$("#pop-up-rating").append(" <!-- POP UP RATING -->" +
             "<div class= 'popup my-popup'>" +
@@ -320,12 +325,9 @@ var app = new Framework7({
           detailKomik(id_Komik);
           showKategoriKomik(id_Komik);
           addview(id_Komik);
-          isFavKomik(localStorage.id, id_Komik);
+          isFavKomik(id_Komik, localStorage.id);
           $$('#btnfav').on('click', function () {
             favKomik(id_Komik, localStorage.id);
-          })
-          $$('#btnfav').on('click', function () {
-            unFavKomik(id_Komik, localStorage.id);
           })
         }
 
