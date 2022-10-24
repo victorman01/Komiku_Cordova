@@ -231,7 +231,7 @@ var app = new Framework7({
                   "<div style='font-weight:normal'><p>Rating: " + t.rating + "/10<i class='f7-icons' style='color:yellow; font-size:18px'>star_fill</i></p></div></strong></div><div class='card-content'>" +
                   "<img src='" + t.poster + "' width='100%'>" +
                   "</div>" +
-                  "<div class='card-footer'><div class='left'><a class='button' href='/bacakomik/" + t.id + "'>Read</a></div>" +
+                  "<div class='card-footer'><div class='left'><a class='button button-raised' href='/bacakomik/" + t.id + "'>Read</a></div>" +
                   "<div class='right' id='viewer-text'><i class='f7-icons' style='font-size:18px'>eye</i>" + t.viewer + "</div><a href='#' data-popup='.my-popup' class='popup-open col button button-raised'><i class='f7-icons size-20'>star_fill</i></a></div></div></div>");
               });
             }
@@ -281,6 +281,26 @@ var app = new Framework7({
           })
         }
         if (page.name == "komik") {
+          $$("#pop-up-rating").append(" <!-- POP UP RATING -->" +
+            "<div class= 'popup my-popup'>" +
+            "<div class='view'>" +
+            "<div class='page'>" +
+            "<div class='navbar'>" +
+            "<div class='navbar-bg'></div>" +
+            "<div class='navbar-inner'>" +
+            "<div class='title'>Rating</div>" +
+            "<div class='right'>" +
+            "<!-- Link to close popup -->" +
+            "<a class='link popup-close'>Close</a>" +
+            "</div>" +
+            "</div>" +
+            "</div>" +
+            "<li>" +
+            "<div class='item-content item-input'>" +
+            "<di class='item inner'>" +
+            "<div class='item title item-label'>Your Rating</div>'" +
+            "<div class='item input-wrap'>" +
+            "<input type='text' name='name' placeholder='Your rating'/>" + "</div>" + "</di>" + "</div>" + "</li>" + "</div>" + "</div></div>")
           $$("#ul_listkomik").html(" ");
           if (page.router.currentRoute.params.id != null) {
             var idKategori = page.router.currentRoute.params.id;
