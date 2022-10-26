@@ -79,7 +79,7 @@ var app = new Framework7({
                   "<img src='" + t.poster + "' width='100%'>" +
                   "</div>" +
                   "<div class='card-footer'><div class='left'><a class='button button-raised' href='/bacakomik/" + t.id + "'>Read</a></div>" +
-                  "<div class='right' id='viewer-text'><i class='f7-icons' style='font-size:18px'>eye</i>" + t.viewer + "</div><a class='col button open-rating button-raised'><i class='f7-icons size-20'>star_fill</i></a></div></div></div > ");
+                  "<div class='right' id='viewer-text'><i class='f7-icons' style='font-size:18px'>eye</i>" + t.viewer + "</div></div></div></div>");
               });
             }
           })
@@ -240,6 +240,18 @@ var app = new Framework7({
         );
       }
 
+      //function updateRatingOnKomik
+      function updateRatingOnKomik(komik_id) {
+        app.request.post("https://ubaya.fun/hybrid/160420035/komiku/updateratingkomik.php", { "komik_id": komik_id },
+          function (data) {
+            var arr = JSON.parse(data);
+            var result = arr['result']
+            if (result == 'success') {
+              //success
+            }
+          })
+      }
+
       //function addRating
       function addRating(komik_id, user_id, rate) {
         app.request.post("https://ubaya.fun/hybrid/160420035/komiku/addrating.php", { "komik_id": komik_id, "user_id": user_id, "rate": rate },
@@ -248,8 +260,61 @@ var app = new Framework7({
             var result = arr['result']
             if (result == 'success') {
               app.dialog.alert("Thanks for rating this comics")
+              updateRatingOnKomik(komik_id)
             } else if (result == 'error') {
-              app.dialog.alert("You already rating this comics")
+              app.request.post("https://ubaya.fun/hybrid/160420035/komiku/checkrating.php", { "komik_id": komik_id, "user_id": user_id },
+                function (data) {
+                  var arr = JSON.parse(data);
+                  var ratings = arr['data']
+                  for (var i = 0; i <= ratings.length; i++) {
+                    var userRate = ratings[i]['rate']
+                    if (userRate == rate) {
+                      app.request.post("https://ubaya.fun/hybrid/160420035/komiku/deleterating.php", { "komik_id": komik_id, "user_id": user_id },
+                        function (data) {
+                          var arr = JSON.parse(data);
+                          var result = arr['result']
+                          if (result == 'success') {
+                            app.dialog.alert('Your rating is deleted')
+                            updateRatingOnKomik(komik_id)
+                          }
+                        })
+                    } else if (userRate != rate) {
+                      app.request.post("https://ubaya.fun/hybrid/160420035/komiku/updaterating.php", { "komik_id": komik_id, "user_id": user_id, 'rate': rate },
+                        function (data) {
+                          var arr = JSON.parse(data);
+                          var result = arr['result']
+                          if (result == 'success') {
+                            app.dialog.alert('Thanks for changing rating this comics')
+                            updateRatingOnKomik(komik_id)
+                          }
+                        })
+                    }
+                  }
+                })
+            }
+          })
+      }
+
+      //function addChat
+      function addChat(komik_id, user_id, chat) {
+        app.request.post("https://ubaya.fun/hybrid/160420035/komiku/addchat.php", { 'komik_id': komik_id, 'user_id': user_id, 'komentar': chat },
+          function (data) {
+            var arr = JSON.parse(data);
+            var result = arr['result']
+            if (result == 'success') {
+              //nice
+            }
+          })
+      }
+
+      //function showChat
+      function showChat(komik_id) {
+        app.request.post('https://ubaya.fun/hybrid/160420035/komiku/showchat.php', { 'komik_id': komik_id },
+          function (data) {
+            var arr = JSON.parse(data);
+            var chats = arr['data'];
+            for (var i = 0; i <= chats.length; i++) {
+              $$('#ul_listchat').append("<li>" + chats[i]['name'] + ": " + chats[i]['komentar'] + "<div class='right'>" + chats[i]['date'] + "</div></li>")
             }
           })
       }
@@ -338,8 +403,8 @@ var app = new Framework7({
             "<a class='button button-raised' id='ratingUser7'><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i></a>" +
             "<a class='button button-raised' id='ratingUser8'><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i></a>" +
             "<a class='button button-raised' id='ratingUser9'><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i></a>" +
-            "<a class='button button-raised' id='ratingUser10'><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i></a>" +
-            "</div></div></li></div></div></div>")
+            "<a class='button button-raised' id='ratingUser10'><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i></a></div></div></li></div></div></div>")
+
           $$('#bacakomik').html(" ");
           $$('#title-komik').html(" ");
           var id_Komik = page.router.currentRoute.params.id;
@@ -347,16 +412,52 @@ var app = new Framework7({
           detailKomik(id_Komik);
           showKategoriKomik(id_Komik);
           addview(id_Komik);
+          showChat(id_Komik);
+          $$('#btnComment').on('click', function () {
+            addChat(id_Komik, localStorage.id, $$('#Comment').val())
+            $$('#Comment').val("")
+            $$('#ul_listchat').html(' ')
+            showChat(id_Komik);
+          })
           isFavKomik(id_Komik, localStorage.id);
           $$('#btnfav').on('click', function () {
             favKomik(id_Komik, localStorage.id);
           })
+          $$('#btnComment').on('click', function () {
+
+          })
+          //#region btnrating 1-10 baca komik
           $$('#ratingUser1').on('click', function () {
             addRating(id_Komik, localStorage.id, 1)
           })
           $$('#ratingUser2').on('click', function () {
             addRating(id_Komik, localStorage.id, 2)
           })
+          $$('#ratingUser3').on('click', function () {
+            addRating(id_Komik, localStorage.id, 3)
+          })
+          $$('#ratingUser4').on('click', function () {
+            addRating(id_Komik, localStorage.id, 4)
+          })
+          $$('#ratingUser5').on('click', function () {
+            addRating(id_Komik, localStorage.id, 5)
+          })
+          $$('#ratingUser6').on('click', function () {
+            addRating(id_Komik, localStorage.id, 6)
+          })
+          $$('#ratingUser7').on('click', function () {
+            addRating(id_Komik, localStorage.id, 7)
+          })
+          $$('#ratingUser8').on('click', function () {
+            addRating(id_Komik, localStorage.id, 8)
+          })
+          $$('#ratingUser9').on('click', function () {
+            addRating(id_Komik, localStorage.id, 9)
+          })
+          $$('#ratingUser10').on('click', function () {
+            addRating(id_Komik, localStorage.id, 10)
+          })
+          //#endregion
         }
 
         if (page.name == "favouritedKomik") {
