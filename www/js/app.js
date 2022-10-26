@@ -230,7 +230,7 @@ var app = new Framework7({
                   "<div class='col-50'><div class='card'>" +
                   "<div class='card-header'> <strong>" + t.judul +
                   "<div style='font-weight:normal'><p>Rating: " + t.rating + "/10<i class='f7-icons' style='color:yellow; font-size:18px'>star_fill</i></p></div></strong></div><div class='card-content'>" +
-                  "<img src='" + t.poster + "' width='100%'>" +
+                  "<img style='max-height=500px' src='" + t.poster + "' width='100%'>" +
                   "</div>" +
                   "<div class='card-footer'><div class='left'><a class='button button-raised' href='/bacakomik/" + t.id + "'>Read</a></div>" +
                   "<div class='right' id='viewer-text'><i class='f7-icons' style='font-size:18px'>eye</i>" + t.viewer + "</div></div></div></div>");
@@ -297,7 +297,7 @@ var app = new Framework7({
 
       //function addChat
       function addChat(komik_id, user_id, chat) {
-        app.request.post("https://ubaya.fun/hybrid/160420035/komiku/addchat.php", { 'komik_id': komik_id, 'user_id': user_id, 'komentar': chat },
+        app.request.post("https://ubaya.fun/hybrid/160420035/komiku/addkomentar.php", { 'komik_id': komik_id, 'user_id': user_id, 'komentar': chat },
           function (data) {
             var arr = JSON.parse(data);
             var result = arr['result']
@@ -309,12 +309,37 @@ var app = new Framework7({
 
       //function showChat
       function showChat(komik_id) {
-        app.request.post('https://ubaya.fun/hybrid/160420035/komiku/showchat.php', { 'komik_id': komik_id },
+        app.request.post('https://ubaya.fun/hybrid/160420035/komiku/showkomentar.php', { 'komik_id': komik_id },
           function (data) {
             var arr = JSON.parse(data);
-            var chats = arr['data'];
-            for (var i = 0; i <= chats.length; i++) {
-              $$('#ul_listchat').append("<li>" + chats[i]['name'] + ": " + chats[i]['komentar'] + "<div class='right'>" + chats[i]['date'] + "</div></li>")
+            var komentars = arr['data'];
+            for (var i = 0; i <= komentars.length; i++) {
+              var date = komentars[i]["date"];
+              var id = komentars[i]['komentar_id'];
+              $$('#ul_listchat').append(
+                '<li class="accordion-item"><a class="item-content item-link" href="#">' +
+                '<div class="item-inner">' +
+                '<div class="item-title"><b id=' + id + '>' + komentars[i]['name'] + "</b>: " + komentars[i]['komentar'] + '<div class="right" style="color:silver">' + date + '</div></div > ' +
+                '</div>' +
+                '</a>' +
+                '<div class="accordion-item-content">' +
+                '<div class="block">' +
+                "<div id='ul_listreply'></div>" +
+                '<p><ul><li><div class="item-title item-label" style="font-size:20px">Reply</div>' +
+                '<input type="text" autofocus="" name="Reply" id="Reply" placeholder="Your Reply"></li>' +
+                '<li><a href="#" class="item-link list-button button button-raised" id="btnReply">SEND REPLY</a></li></p></div></div></li></ul>')
+            }
+          })
+      }
+
+      //function replyKomentar
+      function replyKomentar(komentar_id, komentar, user_id) {
+        app.request.post("https://ubaya.fun/hybrid/160420035/komiku/replykomentar.php", { "komentar": komentar, "user_id": user_id, 'komentar_id': komentar_id },
+          function (data) {
+            var arr = JSON.parse(data)
+            var status = arr['result']
+            if (status == 'success') {
+              app.dialog.result('masuk replynya coy!')
             }
           })
       }
@@ -404,7 +429,6 @@ var app = new Framework7({
             "<a class='button button-raised' id='ratingUser8'><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i></a>" +
             "<a class='button button-raised' id='ratingUser9'><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i></a>" +
             "<a class='button button-raised' id='ratingUser10'><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i><i class='f7-icons size-20'>star_fill</i></a></div></div></li></div></div></div>")
-
           $$('#bacakomik').html(" ");
           $$('#title-komik').html(" ");
           var id_Komik = page.router.currentRoute.params.id;
@@ -423,8 +447,11 @@ var app = new Framework7({
           $$('#btnfav').on('click', function () {
             favKomik(id_Komik, localStorage.id);
           })
-          $$('#btnComment').on('click', function () {
-
+          $$('#btnReply').on('click', function () {
+            app.dialog.alert('test')
+            let id = document.getElementsByTagName("b")[0].id;
+            replyKomentar(id, $$("#Reply").val(), localStorage.id);
+            $$("#Reply").val("")
           })
           //#region btnrating 1-10 baca komik
           $$('#ratingUser1').on('click', function () {
