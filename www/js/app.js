@@ -47,6 +47,87 @@ var app = new Framework7({
           page.router.navigate('/login/');
         })
 
+        if (page.name == 'home') {
+          $$("#ul_listMostPopular").html(" ")
+          $$("#ul_newestKomik").html(" ")
+          $$("#ul_ratedKomik").html(" ")
+          f7.request.post("https://ubaya.fun/hybrid/160420035/komiku/showratedKomik.php",
+            function (data) {
+              var arr = JSON.parse(data)
+              var rated = arr['data']
+              for (var i = 0; i <= rated.length; i++) {
+                var ratedKomik = [];
+                ratedKomik.push({
+                  id: rated[i]['komik_id'],
+                  judul: rated[i]['judul'],
+                  viewer: rated[i]['viewer'],
+                  poster: rated[i]['poster'],
+                  rating: rated[i]['rating']
+                });
+
+                ratedKomik.forEach((t, idx) => {
+                  $$("#ul_ratedKomik").append("<div div class= 'col-50 medium-33' > <div class='card'>" +
+                    "<div class='card-header'> <strong>" + t.judul +
+                    "<div style='font-weight:normal'><p>Rating: " + t.rating + "/10<i class='f7-icons' style='color:yellow; font-size:18px'>star_fill</i></p></div></strong></div><div class='card-content'>" +
+                    "<img style='max-height=500px' src='" + t.poster + "' width='100%'>" +
+                    "</div>" +
+                    "<div class='card-footer'><div class='left'><a class='button button-raised' href='/bacakomik/" + t.id + "'>Read</a></div>" +
+                    "<div class='right' id='viewer-text'><i class='f7-icons' style='font-size:18px'>eye</i>" + t.viewer + "</div></div></div></div>")
+                })
+              }
+            })
+          f7.request.post("https://ubaya.fun/hybrid/160420035/komiku/shownewestkomik.php",
+            function (data) {
+              var arr = JSON.parse(data)
+              var newest = arr['data']
+              for (var i = 0; i <= newest.length; i++) {
+                var newests = [];
+                newests.push({
+                  id: newest[i]['komik_id'],
+                  judul: newest[i]['judul'],
+                  viewer: newest[i]['viewer'],
+                  poster: newest[i]['poster'],
+                  rating: newest[i]['rating']
+                });
+
+                newests.forEach((t, idx) => {
+                  $$("#ul_newestKomik").append("<div div class= 'col-50 medium-33' > <div class='card'>" +
+                    "<div class='card-header'> <strong>" + t.judul +
+                    "<div style='font-weight:normal'><p>Rating: " + t.rating + "/10<i class='f7-icons' style='color:yellow; font-size:18px'>star_fill</i></p></div></strong></div><div class='card-content'>" +
+                    "<img style='max-height=500px' src='" + t.poster + "' width='100%'>" +
+                    "</div>" +
+                    "<div class='card-footer'><div class='left'><a class='button button-raised' href='/bacakomik/" + t.id + "'>Read</a></div>" +
+                    "<div class='right' id='viewer-text'><i class='f7-icons' style='font-size:18px'>eye</i>" + t.viewer + "</div></div></div></div>")
+                })
+              }
+            })
+          f7.request.post("https://ubaya.fun/hybrid/160420035/komiku/mostpopularkomik.php",
+            function (data) {
+              var arr = JSON.parse(data)
+              var popularKomik = arr['data']
+              for (var i = 0; i <= popularKomik.length; i++) {
+                var populars = [];
+                populars.push({
+                  id: popularKomik[i]['komik_id'],
+                  judul: popularKomik[i]['judul'],
+                  viewer: popularKomik[i]['viewer'],
+                  poster: popularKomik[i]['poster'],
+                  rating: popularKomik[i]['rating']
+                });
+
+                populars.forEach((t, idx) => {
+                  $$("#ul_listMostPopular").append("<div div class= 'col-50 medium-33' > <div class='card'>" +
+                    "<div class='card-header'> <strong>" + t.judul +
+                    "<div style='font-weight:normal'><p>Rating: " + t.rating + "/10<i class='f7-icons' style='color:yellow; font-size:18px'>star_fill</i></p></div></strong></div><div class='card-content'>" +
+                    "<img style='max-height=500px' src='" + t.poster + "' width='100%'>" +
+                    "</div>" +
+                    "<div class='card-footer'><div class='left'><a class='button button-raised' href='/bacakomik/" + t.id + "'>Read</a></div>" +
+                    "<div class='right' id='viewer-text'><i class='f7-icons' style='font-size:18px'>eye</i>" + t.viewer + "</div></div></div></div>")
+                });
+              }
+            })
+        }
+
         if (page.name == 'login') {
           $$('#btnsignin').on('click', function () {
             app.request.post('https://ubaya.fun/hybrid/160420035/komiku/login.php',
@@ -247,7 +328,7 @@ function favoritedKomik(user_id, komik_id) {
         })
         favoritedKomik.forEach((t, idx) => {
           $$("#favoritedKomik").append(
-            "<div class='col-50'><div class='card'>" +
+            "<div class='col-50 medium-50'><div class='card'>" +
             "<div class='card-header'> <strong>" + t.judul +
             "<div style='font-weight:normal'><p>Rating: " + t.rating + "/10<i class='f7-icons' style='color:yellow; font-size:18px'>star_fill</i></p></div></strong></div><div class='card-content'>" +
             "<img src='" + t.poster + "' width='100%'>" +
@@ -401,7 +482,7 @@ function getKomik(vcari1 = "", idKategori) {
         });
         komik_inside.forEach((t, idx) => {
           $$("#ul_listkomik").append(
-            "<div class='col-50'><div class='card'>" +
+            "<div class='col-50 medium-50'><div class='card'>" +
             "<div class='card-header'> <strong>" + t.judul +
             "<div style='font-weight:normal'><p>Rating: " + t.rating + "/10<i class='f7-icons' style='color:yellow; font-size:18px'>star_fill</i></p></div></strong></div><div class='card-content'>" +
             "<img style='max-height=500px' src='" + t.poster + "' width='100%'>" +
@@ -501,9 +582,9 @@ function showChat(komik_id) {
           '<div class="accordion-item-content">' +
           '<div class="block">' +
           "<div id='ul_listreply'></div>" +
-          '<p><ul><li><div class="item-title item-label" style="font-size:20px">Your reply</div>' +
+          '<p><div class="item-title item-label" style="font-size:20px">Your reply</div>' +
           '<input type="text" name="Reply" id="Reply-' + id + '" placeholder="Type your reply">' +
-          '<a href="#" class="item-link list-button button button-raised" id="btnReply" onClick="replyKomentar(' + id + ')">SEND REPLY</a></li></p></div></div></ul>')
+          '<a href="#" class="item-link list-button button button-raised" id="btnReply" onClick="replyKomentar(' + id + ')">SEND REPLY</a></p></div></div>')
       }
     })
 }
