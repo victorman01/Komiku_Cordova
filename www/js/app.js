@@ -490,6 +490,8 @@ function showChat(komik_id) {
       for (var i = 0; i <= komentars.length; i++) {
         var date = komentars[i]["date"];
         var id = komentars[i]['komentar_id'];
+        $$('#title-comments').html(" ")
+        $$('#title-comments').append("COMMENTS (" + komentars.length + ")")
         $$('#ul_listchat').append(
           '<li class="accordion-item"><a class="item-content item-link" href="#" onClick="showReplay(' + id + ')">' +
           '<div class="item-inner">' +
